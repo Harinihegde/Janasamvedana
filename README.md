@@ -120,7 +120,7 @@ There are **two ways to run this**:
 Skips the slow (~1–1.5 h) feature-extraction step by downloading our precomputed
 per-frame features + trained Safe/Risk model.
 
-1. Download **`precomputed_outputs.zip`** → **[DOWNLOAD LINK — TO BE ADDED]**
+1. Download **`precomputed_outputs.zip`** → **shared in whatsapp**
 2. Unzip it at the repo root (it creates `outputs/`, `outputs_compression2/`,
    and `outputs_binary/`).
 3. Go straight to the evaluation/results scripts — **no dataset or YOLO weights
