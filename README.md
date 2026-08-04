@@ -97,6 +97,7 @@ We tested several fixes and are reporting honestly what failed, so nobody repeat
 
 ## How to run it
 
+**Setup (needed for both options):**
 ```bash
 git clone https://github.com/Harinihegde/Janasamvedana.git
 cd Janasamvedana
@@ -105,15 +106,41 @@ pip install -r requirements.txt
 ```
 
 **You'll need to get separately** (too large to include in this repo):
-- The video dataset (see `data/README.md` for details)
-- YOLO detection weights (any person-detection `.pt` file)
-- (Optional) the external test dataset used for `gen_test.py`
+- The video dataset (see `data/README.md` for details).
+- **The exact YOLO weights we used: `best_combined.pt`** — a *custom, single-class
+  ('person')* YOLO detector fine-tuned at imgsz 512 (~52 MB;
+  SHA-256 `4a80ac54d8a129edabb0a1a35ed183e68ff4f0622682b2b8e878673e1fd72dea`).
+  This is not "any" person model — this specific file produced the numbers above.
+  → **[DOWNLOAD LINK — TO BE ADDED]**
+- (Optional) the external test dataset used for `gen_test.py`.
 
-**Then run these steps in order:**
+There are **two ways to run this**:
 
+### Option A — Use precomputed outputs (fast; recommended for teammates)
+Skips the slow (~1–1.5 h) feature-extraction step by downloading our precomputed
+per-frame features + trained Safe/Risk model.
+
+1. Download **`precomputed_outputs.zip`** → **[DOWNLOAD LINK — TO BE ADDED]**
+2. Unzip it at the repo root (it creates `outputs/`, `outputs_compression2/`,
+   and `outputs_binary/`).
+3. Go straight to the evaluation/results scripts — **no dataset or YOLO weights
+   needed** for these:
+```bash
+python scripts/train_stage1.py --output outputs          # 4-category model (~2 min from precomputed features)
+python scripts/run_stage2.py   --output outputs          # early-warning alerts
+python scripts/run_binary.py   --features outputs/frame_features.csv --output outputs_binary
+python scripts/run_lovo.py     --oof-cache outputs/lovo_oof.csv   # strictest (leave-one-video-out) test
+```
+The zip contains the 21-feature `frame_features.csv` (the expensive artifact)
+and the trained Safe/Risk model; the scripts above only *train* quick models
+from those features (minutes) — feature extraction is what you skip.
+(`gen_test.py` additionally needs the external `archive.zip`.)
+
+### Option B — Run the full pipeline from scratch
+Needs the dataset **and** `best_combined.pt`.
 ```bash
 # Step 1: Extract features from all videos (~1-1.5 hours, one-time)
-python scripts/extract_features.py --dataset /path/to/videos --weights /path/to/best.pt --output outputs
+python scripts/extract_features.py --dataset /path/to/videos --weights /path/to/best_combined.pt --output outputs
 
 # Step 2: Train the 4-category model
 python scripts/train_stage1.py --output outputs

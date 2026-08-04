@@ -1,13 +1,14 @@
-numpy>=1.26
-pandas>=2.2
-scipy>=1.11
-scikit-learn>=1.5
-opencv-python>=4.9
-ultralytics>=8.3          # YOLO person detection
-torch>=2.2               # backs ultralytics + torchvision NMS
-torchvision>=0.17
-matplotlib>=3.8
+# Exact versions used to produce the reported results.
+numpy==2.3.0
+pandas==2.3.0
+scipy==1.15.3
+scikit-learn==1.7.0        # pinned: unpickling the trained models requires a matching version
+opencv-python==4.13.0.92
+ultralytics==8.4.56        # YOLO person detection
+torch==2.7.1               # backs ultralytics + torchvision NMS
+torchvision==0.22.1
+matplotlib==3.10.3
 
 # optional — only for scripts in experiments_reverted/ and the optimisation sweep
-xgboost>=2.0
-imbalanced-learn>=0.12
+xgboost==3.3.0
+imbalanced-learn==0.14.2
