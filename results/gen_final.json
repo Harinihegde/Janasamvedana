@@ -1,0 +1,50 @@
+{
+  "learned_threshold": 0.312,
+  "density_floor_hi": 0.95,
+  "by_incident": {
+    "Italy": {
+      "catch_rate": 0.9,
+      "caught_by_floor": 2,
+      "caught_by_learned": 7,
+      "n_abnormal": 10,
+      "AUC": "n/a",
+      "normal_flagged": 0,
+      "n_normal": 0
+    },
+    "Las Vegas": {
+      "catch_rate": 0.843,
+      "caught_by_floor": 0,
+      "caught_by_learned": 43,
+      "n_abnormal": 51,
+      "AUC": 0.959,
+      "normal_flagged": 0,
+      "n_normal": 29
+    },
+    "Love Parade": {
+      "catch_rate": 1.0,
+      "caught_by_floor": 3,
+      "caught_by_learned": 0,
+      "n_abnormal": 3,
+      "AUC": "n/a",
+      "normal_flagged": 2,
+      "n_normal": 2
+    },
+    "Times Square": {
+      "catch_rate": 0.522,
+      "caught_by_floor": 0,
+      "caught_by_learned": 12,
+      "n_abnormal": 23,
+      "AUC": 0.674,
+      "normal_flagged": 0,
+      "n_normal": 6
+    }
+  },
+  "overall": {
+    "abnormal_catch": 0.77,
+    "normal_FP_incl_dense": 0.054,
+    "normal_FP_excl_saturated": 0.0,
+    "n_abnormal": 87,
+    "n_normal": 37,
+    "note": "normal_FP_incl_dense counts density-saturated pre-crush clips (e.g. Love Parade normal) as FP; excl_saturated treats those as correct early warnings and reports FP on moderate crowds only."
+  }
+}

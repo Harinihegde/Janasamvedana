@@ -1,0 +1,58 @@
+{
+  "by_incident": {
+    "Italy": {
+      "kind": "flight",
+      "ABNORMAL (want panic)": {
+        "n_clips": 10,
+        "mean_risk": 0.425,
+        "flagged_panic_rate": 0.3
+      },
+      "NORMAL (want safe)": "n/a"
+    },
+    "Las Vegas": {
+      "kind": "flight",
+      "ABNORMAL (want panic)": {
+        "n_clips": 51,
+        "mean_risk": 0.561,
+        "flagged_panic_rate": 0.588
+      },
+      "NORMAL (want safe)": {
+        "n_clips": 29,
+        "mean_risk": 0.153,
+        "flagged_panic_rate": 0.0
+      }
+    },
+    "Love Parade": {
+      "kind": "crush",
+      "ABNORMAL (want panic)": {
+        "n_clips": 3,
+        "mean_risk": 0.235,
+        "flagged_panic_rate": 0.0
+      },
+      "NORMAL (want safe)": {
+        "n_clips": 2,
+        "mean_risk": 0.221,
+        "flagged_panic_rate": 0.0
+      }
+    },
+    "Times Square": {
+      "kind": "flight",
+      "ABNORMAL (want panic)": {
+        "n_clips": 23,
+        "mean_risk": 0.283,
+        "flagged_panic_rate": 0.0
+      },
+      "NORMAL (want safe)": {
+        "n_clips": 6,
+        "mean_risk": 0.243,
+        "flagged_panic_rate": 0.0
+      }
+    }
+  },
+  "overall": {
+    "abnormal_catch_rate": 0.379,
+    "normal_false_positive_rate": 0.0,
+    "n_abnormal_clips": 87,
+    "n_normal_clips": 37
+  }
+}

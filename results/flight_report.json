@@ -1,0 +1,63 @@
+{
+  "new_features": [
+    "flow_dir_divergence",
+    "flight_score"
+  ],
+  "motion_running_subset": {
+    "n_clips": 25,
+    "before_21": {
+      "n": 25,
+      "recall_panic": 0.0,
+      "pred_counts": {
+        "Normal": 16,
+        "No Panic": 9
+      }
+    },
+    "after_23": {
+      "n": 25,
+      "recall_panic": 0.0,
+      "pred_counts": {
+        "Normal": 17,
+        "No Panic": 8
+      }
+    }
+  },
+  "overall_before_21": {
+    "accuracy": 0.6796992481203008,
+    "macro_f1": 0.6640227117040617,
+    "panic": {
+      "precision": 0.5659722222222222,
+      "recall": 0.5800711743772242,
+      "f1-score": 0.5729349736379613
+    },
+    "crowdy": {
+      "precision": 0.7279411764705882,
+      "recall": 0.6226415094339622,
+      "f1-score": 0.6711864406779661
+    }
+  },
+  "overall_after_23": {
+    "accuracy": 0.6766917293233082,
+    "macro_f1": 0.6613569747455694,
+    "panic": {
+      "precision": 0.5582191780821918,
+      "recall": 0.5800711743772242,
+      "f1-score": 0.568935427574171
+    },
+    "crowdy": {
+      "precision": 0.7333333333333333,
+      "recall": 0.6226415094339622,
+      "f1-score": 0.673469387755102
+    }
+  },
+  "new_feature_rank": {
+    "flow_dir_divergence": [
+      21,
+      0.018
+    ],
+    "flight_score": [
+      17,
+      0.0267
+    ]
+  }
+}

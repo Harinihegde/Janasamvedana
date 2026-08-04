@@ -1,0 +1,16 @@
+{
+  "n_videos": 71,
+  "clip_level": {
+    "accuracy": 0.8353383458646616,
+    "risk_precision": 0.5865921787709497,
+    "risk_recall": 0.7473309608540926,
+    "risk_f1": 0.6572769953051644
+  },
+  "video_level_accuracy": 0.7746478873239436,
+  "per_class_video_recall": {
+    "Crowdy": 0.7058823529411765,
+    "No Panic": 1.0,
+    "Normal": 0.9,
+    "Panic": 0.7727272727272727
+  }
+}

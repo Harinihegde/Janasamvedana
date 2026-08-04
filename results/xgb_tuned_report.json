@@ -1,0 +1,110 @@
+{
+  "constraints": {
+    "recall_min": 0.65,
+    "precision_min": 0.7
+  },
+  "both_constraints_met": false,
+  "chosen_threshold": 0.54,
+  "chosen_metrics": {
+    "threshold": 0.54,
+    "f1": 0.6059,
+    "recall": 0.6619,
+    "precision": 0.5586,
+    "macro_f1": 0.7438,
+    "accuracy": 0.818
+  },
+  "reference_points": {
+    "thr_0.50": {
+      "threshold": 0.5,
+      "f1": 0.596,
+      "recall": 0.705,
+      "precision": 0.517,
+      "macro_f1": 0.731,
+      "accuracy": 0.798
+    },
+    "thr_0.60": {
+      "threshold": 0.6,
+      "f1": 0.612,
+      "recall": 0.609,
+      "precision": 0.615,
+      "macro_f1": 0.754,
+      "accuracy": 0.837
+    },
+    "thr_0.70": {
+      "threshold": 0.7,
+      "f1": 0.597,
+      "recall": 0.491,
+      "precision": 0.762,
+      "macro_f1": 0.756,
+      "accuracy": 0.86
+    },
+    "thr_0.80": {
+      "threshold": 0.8,
+      "f1": 0.507,
+      "recall": 0.363,
+      "precision": 0.843,
+      "macro_f1": 0.71,
+      "accuracy": 0.851
+    }
+  },
+  "cv_oof_confusion": {
+    "labels": [
+      "Safe",
+      "Stampede Risk"
+    ],
+    "matrix": [
+      [
+        902,
+        147
+      ],
+      [
+        95,
+        186
+      ]
+    ]
+  },
+  "stage2": {
+    "spec_0.8": {
+      "threshold": 0.8,
+      "n_sequences": 20,
+      "detection_rate": 0.75,
+      "mean_latency_frames": -3.333,
+      "median_latency_frames": -15.0,
+      "false_positive_rate": 0.727,
+      "n_stable_videos": 11
+    },
+    "chosen_threshold": {
+      "threshold": 0.54,
+      "n_sequences": 20,
+      "detection_rate": 0.75,
+      "mean_latency_frames": -7.333,
+      "median_latency_frames": -2.0,
+      "false_positive_rate": 0.727,
+      "n_stable_videos": 11
+    }
+  },
+  "model_files": {
+    "xgboost": "winner_xgb_tuned.json",
+    "feature_cols": [
+      "person_count",
+      "crowd_density",
+      "density_norm",
+      "flow_mag_mean",
+      "flow_mag_var",
+      "velocity_per_person",
+      "velocity_var",
+      "motion_instability",
+      "stop_go",
+      "direction_consistency",
+      "trajectory_dispersion",
+      "density_trend",
+      "bbox_overlap_ratio",
+      "bbox_overlap_trend",
+      "detection_confidence_mean",
+      "detection_confidence_std",
+      "bbox_area_variance",
+      "bbox_area_mean",
+      "spatial_density_mismatch"
+    ]
+  }
+}

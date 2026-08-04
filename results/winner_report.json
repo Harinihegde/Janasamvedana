@@ -1,0 +1,127 @@
+{
+  "approach": "A5 feature-select (top12)",
+  "feature_cols": [
+    "detection_confidence_mean",
+    "bbox_area_mean",
+    "detection_confidence_std",
+    "spatial_density_mismatch",
+    "stop_go",
+    "flow_mag_mean",
+    "direction_consistency",
+    "bbox_area_variance",
+    "flow_mag_var",
+    "velocity_var",
+    "bbox_overlap_ratio",
+    "crowd_density"
+  ],
+  "threshold": 0.5,
+  "normalizer": {
+    "cols": [
+      "detection_confidence_mean",
+      "bbox_area_mean",
+      "detection_confidence_std",
+      "spatial_density_mismatch",
+      "stop_go",
+      "flow_mag_mean",
+      "direction_consistency",
+      "bbox_area_variance",
+      "flow_mag_var",
+      "velocity_var",
+      "bbox_overlap_ratio",
+      "crowd_density"
+    ],
+    "min": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -8.749725566303823e-08,
+      0.0
+    ],
+    "max": [
+      0.7841569185256958,
+      0.5026221871376038,
+      0.3116059005260467,
+      0.75,
+      0.0275348595253365,
+      0.047694705743397,
+      1.0,
+      0.050695676356554,
+      0.0151406117787347,
+      0.6380578328751122,
+      3.78676700592041,
+      130.20833333333331
+    ],
+    "mean": [
+      0.3588226727553845,
+      0.022542530274049705,
+      0.074645936273855,
+      0.3075377215223117,
+      0.001311387328515467,
+      0.005763407027648515,
+      0.3907076536888807,
+      0.0007182241653158765,
+      5.138595168546367e-05,
+      0.011287237445527848,
+      0.26091450413269146,
+      6.408320343858659
+    ],
+    "std": [
+      0.11256037861719853,
+      0.03830579958978357,
+      0.04148136665724823,
+      0.14519298596320065,
+      0.0016826370611909944,
+      0.005686489644235517,
+      0.25490373175903713,
+      0.002031181184511014,
+      0.00016257461558660962,
+      0.022811724029290447,
+      0.40999381528675766,
+      9.09404734491407
+    ]
+  },
+  "model_file": "winner_model.pkl",
+  "cv_oof_confusion": {
+    "labels": [
+      "Safe",
+      "Stampede Risk"
+    ],
+    "matrix": [
+      [
+        1002,
+        47
+      ],
+      [
+        127,
+        154
+      ]
+    ]
+  },
+  "stage2": {
+    "spec_0.8": {
+      "threshold": 0.8,
+      "n_sequences": 20,
+      "detection_rate": 0.45,
+      "mean_latency_frames": -13.333333333333334,
+      "median_latency_frames": -16.0,
+      "false_positive_rate": 0.5454545454545454,
+      "n_stable_videos": 11
+    },
+    "winner_threshold": {
+      "threshold": 0.5,
+      "n_sequences": 20,
+      "detection_rate": 0.7,
+      "mean_latency_frames": 17.714285714285715,
+      "median_latency_frames": 26.5,
+      "false_positive_rate": 0.7272727272727273,
+      "n_stable_videos": 11
+    }
+  }
+}

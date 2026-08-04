@@ -1,0 +1,24 @@
+{
+  "protocol": "binary LOVO (leave-one-video-out), clip-level, 21 features",
+  "floor_LO_HI": [
+    0.8,
+    0.95
+  ],
+  "WITHOUT_floor": {
+    "AUC": 0.859,
+    "risk_precision": 0.814,
+    "risk_recall": 0.452,
+    "risk_f1": 0.581
+  },
+  "WITH_floor": {
+    "AUC": 0.845,
+    "risk_precision": 0.671,
+    "risk_recall": 0.495,
+    "risk_f1": 0.57
+  },
+  "floor_effect": {
+    "safe_clips_newly_flagged_risk": 39,
+    "risk_clips_newly_flagged_risk": 12,
+    "note": "floor flips clips base<0.5 -> >=0.5 purely from density; if it flags more SAFE than RISK it hurts."
+  }
+}

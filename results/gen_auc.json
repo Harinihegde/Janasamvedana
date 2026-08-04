@@ -1,0 +1,22 @@
+{
+  "per_incident_AUC": {
+    "Italy": "n/a (one class only)",
+    "Las Vegas": 0.959,
+    "Love Parade": 1.0,
+    "Times Square": 0.688
+  },
+  "overall_AUC": 0.917,
+  "risk_separation": {
+    "abnormal_mean_risk": 0.461,
+    "normal_mean_risk": 0.171
+  },
+  "las_vegas_case_study": {
+    "transition_frame_idx": 1101,
+    "n_frames": 1370,
+    "normal_mean_risk": 0.153,
+    "abnormal_mean_risk": 0.217,
+    "alert_frame_idx": 792,
+    "alert_latency_frames_after_onset": -309
+  },
+  "note": "AUC over clip-level mean risk. Italy has no normal clips -> no AUC. Overall AUC pools all incidents."
+}

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.Python
+env/
+venv/
+.venv/
+
+# Raw data / large artifacts — never commit (regenerable or too large)
+*.mp4
+*.avi
+*.mov
+*.zip
+archive.zip
+
+# Generated feature tables & trained models (regenerate via scripts/)
+frame_features.csv
+*frame_features.csv
+augmented_features.csv
+gen_features.csv
+*.pkl
+*.pt
+
+# Pipeline output dirs (large: montages, per-frame CSVs)
+outputs/
+outputs_*/
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+.ipynb_checkpoints/
+.vscode/
+.idea/

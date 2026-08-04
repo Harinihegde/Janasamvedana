@@ -1,0 +1,83 @@
+{
+  "baseline_fixed_0.5": {
+    "threshold": 0.5,
+    "overall_catch": 0.379,
+    "overall_FP": 0.0
+  },
+  "global_normal_calibrated": [
+    {
+      "fp_budget": 0.0,
+      "threshold": 0.312,
+      "overall_catch": 0.713,
+      "overall_FP_actual": 0.0,
+      "per_incident_catch": {
+        "Italy": 0.7,
+        "Las Vegas": 0.843,
+        "Love Parade": 0.0,
+        "Times Square": 0.522
+      }
+    },
+    {
+      "fp_budget": 0.05,
+      "threshold": 0.296,
+      "overall_catch": 0.736,
+      "overall_FP_actual": 0.054,
+      "per_incident_catch": {
+        "Italy": 0.8,
+        "Las Vegas": 0.863,
+        "Love Parade": 0.0,
+        "Times Square": 0.522
+      }
+    },
+    {
+      "fp_budget": 0.1,
+      "threshold": 0.268,
+      "overall_catch": 0.77,
+      "overall_FP_actual": 0.108,
+      "per_incident_catch": {
+        "Italy": 0.9,
+        "Las Vegas": 0.863,
+        "Love Parade": 0.0,
+        "Times Square": 0.609
+      }
+    },
+    {
+      "fp_budget": 0.2,
+      "threshold": 0.234,
+      "overall_catch": 0.816,
+      "overall_FP_actual": 0.216,
+      "per_incident_catch": {
+        "Italy": 0.9,
+        "Las Vegas": 0.882,
+        "Love Parade": 0.667,
+        "Times Square": 0.652
+      }
+    }
+  ],
+  "per_incident_calibrated": {
+    "Italy": {
+      "n_abnormal": 10,
+      "n_normal": 0,
+      "note": "too few normal clips to self-calibrate"
+    },
+    "Las Vegas": {
+      "n_abnormal": 51,
+      "n_normal": 29,
+      "threshold_above_site_normal": 0.295,
+      "catch_rate": 0.863,
+      "note": "threshold = just above this incident's normal max"
+    },
+    "Love Parade": {
+      "n_abnormal": 3,
+      "n_normal": 2,
+      "note": "too few normal clips to self-calibrate"
+    },
+    "Times Square": {
+      "n_abnormal": 23,
+      "n_normal": 6,
+      "threshold_above_site_normal": 0.312,
+      "catch_rate": 0.522,
+      "note": "threshold = just above this incident's normal max"
+    }
+  }
+}

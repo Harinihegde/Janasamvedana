@@ -1,0 +1,230 @@
+{
+  "label_scheme": {
+    "Safe": "No Panic + Normal + Crowdy",
+    "Stampede Risk": "Panic"
+  },
+  "features_used": [
+    "person_count",
+    "crowd_density",
+    "density_norm",
+    "flow_mag_mean",
+    "flow_mag_var",
+    "velocity_per_person",
+    "velocity_var",
+    "motion_instability",
+    "stop_go",
+    "direction_consistency",
+    "trajectory_dispersion",
+    "density_trend",
+    "bbox_overlap_ratio",
+    "bbox_overlap_trend",
+    "detection_confidence_mean",
+    "detection_confidence_std",
+    "bbox_area_variance",
+    "bbox_area_mean",
+    "spatial_density_mismatch",
+    "hull_density",
+    "nn_distance_mean"
+  ],
+  "holdout": {
+    "frame_level": {
+      "accuracy": 0.8560740303209293,
+      "macro_f1": 0.7630191558104569,
+      "weighted_f1": 0.8591245305012579,
+      "per_class": {
+        "Safe": {
+          "precision": 0.923177508989866,
+          "recall": 0.9001514064865727,
+          "f1-score": 0.9115190639499697,
+          "support": 12549.0
+        },
+        "Stampede Risk": {
+          "precision": 0.5824725091636122,
+          "recall": 0.6502976190476191,
+          "f1-score": 0.6145192476709439,
+          "support": 2688.0
+        },
+        "accuracy": 0.8560740303209293,
+        "macro avg": {
+          "precision": 0.752825009076739,
+          "recall": 0.7752245127670958,
+          "f1-score": 0.7630191558104569,
+          "support": 15237.0
+        },
+        "weighted avg": {
+          "precision": 0.8630728269964966,
+          "recall": 0.8560740303209293,
+          "f1-score": 0.8591245305012579,
+          "support": 15237.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          11296,
+          1253
+        ],
+        [
+          940,
+          1748
+        ]
+      ],
+      "confusion_labels": [
+        "Safe",
+        "Stampede Risk"
+      ]
+    },
+    "clip_level": {
+      "accuracy": 0.9144254278728606,
+      "macro_f1": 0.8548719040522319,
+      "weighted_f1": 0.9119250890864984,
+      "per_class": {
+        "Safe": {
+          "precision": 0.9325513196480938,
+          "recall": 0.9636363636363636,
+          "f1-score": 0.9478390461997019,
+          "support": 330.0
+        },
+        "Stampede Risk": {
+          "precision": 0.8235294117647058,
+          "recall": 0.7088607594936709,
+          "f1-score": 0.7619047619047619,
+          "support": 79.0
+        },
+        "accuracy": 0.9144254278728606,
+        "macro avg": {
+          "precision": 0.8780403657063998,
+          "recall": 0.8362485615650173,
+          "f1-score": 0.8548719040522319,
+          "support": 409.0
+        },
+        "weighted avg": {
+          "precision": 0.9114932983209847,
+          "recall": 0.9144254278728606,
+          "f1-score": 0.9119250890864984,
+          "support": 409.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          318,
+          12
+        ],
+        [
+          23,
+          56
+        ]
+      ],
+      "confusion_labels": [
+        "Safe",
+        "Stampede Risk"
+      ]
+    },
+    "n_train_frames": 33888,
+    "n_test_frames": 15237,
+    "n_test_clips": 409
+  },
+  "cross_validation": {
+    "n_splits": 5,
+    "clip_accuracy_mean": 0.7429420040143364,
+    "clip_accuracy_std": 0.27136290386467704,
+    "clip_macro_f1_mean": 0.6095567629876643,
+    "clip_macro_f1_std": 0.2380869189103979,
+    "clip_weighted_f1_mean": 0.761242673365538,
+    "fold_accuracies": [
+      0.21875,
+      0.8955223880597015,
+      0.9069767441860465,
+      0.7426160337552743,
+      0.9508448540706606
+    ],
+    "oof": {
+      "accuracy": 0.8631578947368421,
+      "macro_f1": 0.7648304673078792,
+      "weighted_f1": 0.8526391466863019,
+      "per_class": {
+        "Safe": {
+          "precision": 0.8799298860648553,
+          "recall": 0.9571020019065777,
+          "f1-score": 0.9168949771689497,
+          "support": 1049.0
+        },
+        "Stampede Risk": {
+          "precision": 0.7619047619047619,
+          "recall": 0.5124555160142349,
+          "f1-score": 0.6127659574468085,
+          "support": 281.0
+        },
+        "accuracy": 0.8631578947368421,
+        "macro avg": {
+          "precision": 0.8209173239848087,
+          "recall": 0.7347787589604062,
+          "f1-score": 0.7648304673078792,
+          "support": 1330.0
+        },
+        "weighted avg": {
+          "precision": 0.8549937508099785,
+          "recall": 0.8631578947368421,
+          "f1-score": 0.8526391466863019,
+          "support": 1330.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1004,
+          45
+        ],
+        [
+          137,
+          144
+        ]
+      ],
+      "confusion_labels": [
+        "Safe",
+        "Stampede Risk"
+      ]
+    }
+  },
+  "stage2": {
+    "spec_threshold_0.8": {
+      "threshold": 0.8,
+      "n_sequences": 20,
+      "detection_rate": 0.2,
+      "mean_latency_frames": -16.0,
+      "median_latency_frames": -16.0,
+      "false_positive_rate": 0.36363636363636365,
+      "n_stable_videos": 11
+    },
+    "calibrated": {
+      "threshold": 0.52,
+      "n_sequences": 20,
+      "detection_rate": 0.8,
+      "mean_latency_frames": -0.25,
+      "median_latency_frames": 12.0,
+      "false_positive_rate": 0.7272727272727273,
+      "n_stable_videos": 11
+    }
+  },
+  "feature_importances": {
+    "hull_density": 0.1356766851054544,
+    "detection_confidence_mean": 0.10630317899257782,
+    "spatial_density_mismatch": 0.07094380382785559,
+    "bbox_area_mean": 0.06374585276017977,
+    "detection_confidence_std": 0.059910751305997045,
+    "stop_go": 0.05766986408805899,
+    "flow_mag_mean": 0.04917564069104588,
+    "direction_consistency": 0.04420518342854457,
+    "bbox_overlap_ratio": 0.04173163381682835,
+    "velocity_per_person": 0.03949997723729619,
+    "bbox_area_variance": 0.03814939765600692,
+    "flow_mag_var": 0.0377352626914427,
+    "crowd_density": 0.03511459525873965,
+    "velocity_var": 0.03498995711429896,
+    "motion_instability": 0.03365529973550643,
+    "density_norm": 0.030954606407698915,
+    "person_count": 0.0305975144282739,
+    "nn_distance_mean": 0.028768160234338536,
+    "trajectory_dispersion": 0.027724851240407744,
+    "density_trend": 0.01789979000400712,
+    "bbox_overlap_trend": 0.01554799397544063
+  }
+}

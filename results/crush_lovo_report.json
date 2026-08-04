@@ -1,0 +1,138 @@
+{
+  "composition": {
+    "panic_clips_total": 281,
+    "crush_clips": 162,
+    "flight_clips_dropped": 54,
+    "removed_clips": 65,
+    "crush_videos": 16
+  },
+  "full": {
+    "accuracy": 0.6654135338345865,
+    "macro_f1": 0.6508724109563031,
+    "per_class": {
+      "No Panic": {
+        "precision": 0.7242647058823529,
+        "recall": 0.5412087912087912,
+        "f1-score": 0.6194968553459119,
+        "support": 364.0
+      },
+      "Normal": {
+        "precision": 0.6768982229402262,
+        "recall": 0.7965779467680608,
+        "f1-score": 0.7318777292576419,
+        "support": 526.0
+      },
+      "Crowdy": {
+        "precision": 0.7441860465116279,
+        "recall": 0.6037735849056604,
+        "f1-score": 0.6666666666666666,
+        "support": 159.0
+      },
+      "Panic": {
+        "precision": 0.5580645161290323,
+        "recall": 0.6156583629893239,
+        "f1-score": 0.5854483925549916,
+        "support": 281.0
+      }
+    },
+    "crowdy_panic_block": {
+      "Panic->Panic": 173,
+      "Panic->Crowdy": 27,
+      "Crowdy->Panic": 48,
+      "Crowdy->Crowdy": 96
+    },
+    "confusion": [
+      [
+        197,
+        137,
+        1,
+        29
+      ],
+      [
+        42,
+        419,
+        5,
+        60
+      ],
+      [
+        1,
+        14,
+        96,
+        48
+      ],
+      [
+        32,
+        49,
+        27,
+        173
+      ]
+    ]
+  },
+  "clean": {
+    "accuracy": 0.6829066886870355,
+    "macro_f1": 0.6151209243204208,
+    "per_class": {
+      "No Panic": {
+        "precision": 0.7581227436823105,
+        "recall": 0.5769230769230769,
+        "f1-score": 0.6552262090483619,
+        "support": 364.0
+      },
+      "Normal": {
+        "precision": 0.6835820895522388,
+        "recall": 0.870722433460076,
+        "f1-score": 0.7658862876254181,
+        "support": 526.0
+      },
+      "Crowdy": {
+        "precision": 0.6882352941176471,
+        "recall": 0.7358490566037735,
+        "f1-score": 0.7112462006079028,
+        "support": 159.0
+      },
+      "Panic": {
+        "precision": 0.44680851063829785,
+        "recall": 0.25925925925925924,
+        "f1-score": 0.328125,
+        "support": 162.0
+      }
+    },
+    "crowdy_panic_block": {
+      "Panic->Panic": 42,
+      "Panic->Crowdy": 46,
+      "Crowdy->Panic": 21,
+      "Crowdy->Crowdy": 117
+    },
+    "confusion": [
+      [
+        210,
+        141,
+        1,
+        12
+      ],
+      [
+        43,
+        458,
+        6,
+        19
+      ],
+      [
+        1,
+        20,
+        117,
+        21
+      ],
+      [
+        23,
+        51,
+        46,
+        42
+      ]
+    ]
+  },
+  "isolation": {
+    "crush_clips_evaluated": 162,
+    "crush_recall_FULL_training": 0.691358024691358,
+    "crush_recall_CLEAN_training": 0.25925925925925924
+  }
+}

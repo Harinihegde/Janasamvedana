@@ -1,0 +1,79 @@
+{
+  "hysteresis_k": 6,
+  "tolerance": 40,
+  "cooldown": 15,
+  "augmentation": true,
+  "sweep": [
+    {
+      "threshold": 0.5,
+      "detection_rate": 0.87,
+      "false_positive_rate": 0.673,
+      "median_latency_frames": -3.0,
+      "mean_latency_frames": 4.0,
+      "n_detected": 40,
+      "n_sequences": 46,
+      "n_fp": 33,
+      "n_stable": 49
+    },
+    {
+      "threshold": 0.55,
+      "detection_rate": 0.761,
+      "false_positive_rate": 0.633,
+      "median_latency_frames": -7.0,
+      "mean_latency_frames": 1.9,
+      "n_detected": 35,
+      "n_sequences": 46,
+      "n_fp": 31,
+      "n_stable": 49
+    },
+    {
+      "threshold": 0.6,
+      "detection_rate": 0.674,
+      "false_positive_rate": 0.612,
+      "median_latency_frames": -7.0,
+      "mean_latency_frames": 2.6,
+      "n_detected": 31,
+      "n_sequences": 46,
+      "n_fp": 30,
+      "n_stable": 49
+    },
+    {
+      "threshold": 0.65,
+      "detection_rate": 0.674,
+      "false_positive_rate": 0.551,
+      "median_latency_frames": -7.0,
+      "mean_latency_frames": 0.2,
+      "n_detected": 31,
+      "n_sequences": 46,
+      "n_fp": 27,
+      "n_stable": 49
+    },
+    {
+      "threshold": 0.7,
+      "detection_rate": 0.587,
+      "false_positive_rate": 0.469,
+      "median_latency_frames": -8.0,
+      "mean_latency_frames": 1.3,
+      "n_detected": 27,
+      "n_sequences": 46,
+      "n_fp": 23,
+      "n_stable": 49
+    }
+  ],
+  "stage1": {
+    "n_videos": 71,
+    "clip_level": {
+      "accuracy": 0.8353383458646616,
+      "risk_precision": 0.5865921787709497,
+      "risk_recall": 0.7473309608540926,
+      "risk_f1": 0.6572769953051644
+    },
+    "video_level_accuracy": 0.7746478873239436,
+    "per_class_video_recall": {
+      "Crowdy": 0.7058823529411765,
+      "No Panic": 1.0,
+      "Normal": 0.9,
+      "Panic": 0.7727272727272727
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "XGBoost @ 0.50": {
+    "detection_rate": 0.833,
+    "median_latency_frames": -1.0,
+    "mean_latency_frames": 2.9,
+    "false_positive_rate": 0.816,
+    "n_sequences": 126,
+    "n_detected": 105,
+    "n_stable_videos": 49
+  },
+  "A5 RF top-12": {
+    "detection_rate": 0.802,
+    "median_latency_frames": -2.0,
+    "mean_latency_frames": 4.1,
+    "false_positive_rate": 0.653,
+    "n_sequences": 126,
+    "n_detected": 101,
+    "n_stable_videos": 49
+  },
+  "Binary (12 feat)": {
+    "detection_rate": 0.651,
+    "median_latency_frames": 0.5,
+    "mean_latency_frames": 5.1,
+    "false_positive_rate": 0.653,
+    "n_sequences": 126,
+    "n_detected": 82,
+    "n_stable_videos": 49
+  }
+}

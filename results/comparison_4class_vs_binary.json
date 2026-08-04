@@ -1,0 +1,15 @@
+{
+  "winner_by_oof_macro_f1": "Binary",
+  "four_class": {
+    "oof_macro_f1": 0.550211545960671,
+    "oof_accuracy": 0.5729323308270676,
+    "panic_f1": 0.4728682170542636,
+    "panic_recall": 0.43416370106761565
+  },
+  "binary": {
+    "oof_macro_f1": 0.6660829135993801,
+    "oof_accuracy": 0.8172932330827067,
+    "stampede_risk_f1": 0.4413793103448276,
+    "stampede_risk_recall": 0.3416370106761566
+  }
+}
