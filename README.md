@@ -1,4 +1,3 @@
-Here's a simplified version, same info, easier for teammates to actually read and understand:
 
 ---
 
@@ -35,9 +34,11 @@ We collected 71 real videos, split into 1,330 short clips:
 
 ## Our results (the honest numbers)
 
+### Stage 1 — Risk classification
+
 **Simple Safe vs Risk detection:**
 - 86.3% accuracy (compared to 78.9% if you just always guessed "safe")
-- When it says "risk," it's right 76% of the time, and catches about half (51%) of real dangerous situations
+- When it says "risk," it's right 76% of the time (precision), and catches about half (51%) of real dangerous situations (recall)
 
 **Detailed 4-category detection (No Panic/Normal/Crowdy/Panic):**
 - 68% accuracy overall
@@ -50,6 +51,33 @@ We collected 71 real videos, split into 1,330 short clips:
 **Testing on 4 completely new, real-world incidents (Times Square, Las Vegas, Love Parade, Italy):**
 - Without any adjustment: catches 38% of real danger, with zero false alarms
 - After calibrating the alarm sensitivity per location (a normal real-world setup step): catches 71% of real danger, still zero false alarms
+- Caveat: this 71% number should be treated cautiously — some individual "catches" in this test may have been coincidental rather than the model genuinely recognizing danger. Treat 41-58% (our own dataset numbers) as the more dependable range.
+
+### Stage 2 — Early-warning alerts
+
+**Important context:** we don't have real footage of a crowd smoothly turning from calm into panic in one continuous video. So we tested this by artificially gluing a calm clip to a panic clip and checking if the system notices the switch. This is a reasonable stand-in, but it's a simulated test, not a real one.
+
+**Table 1 — Base model (trained on original data only):**
+
+| Alarm sensitivity | Catches real transitions | False alarms on calm videos | Warning timing |
+|---|---|---|---|
+| Standard (0.50) | 63% | 57% | 4 frames late |
+| Stricter (0.60) | 41% | 47% | 5 frames late |
+| Strictest (0.70) | 35% | 31% | 6 frames late |
+
+**Table 2 — Same test, but trained on extra (augmented) Panic data:**
+
+| Alarm sensitivity | Catches real transitions | False alarms on calm videos | Warning timing |
+|---|---|---|---|
+| Standard (0.50) | 96% | 84% | 7 frames early |
+| Stricter (0.60) | 83% | 69% | 4 frames late |
+| Strictest (0.70) | 72% | 53% | 5 frames late |
+
+**How to read these two tables together:** adding extra training data (via augmentation) makes the system catch far more real escalations — up to 96% — and even warn *early* instead of late, at the standard sensitivity. But it comes at a real cost: false alarms jump to 84%, meaning it would cry wolf on the vast majority of calm crowds too. This isn't the model "understanding panic better" — it's the model becoming more trigger-happy overall, which mechanically raises both detection and false alarms together.
+
+**The best middle-ground we found:** using the augmented model with a stricter "wait for 5 confirmations before alerting" rule, at the standard 0.50 sensitivity: catches 89% of real escalations, still with a high false-alarm rate (71%), but warns about 11 frames early.
+
+**Bottom line for Stage 2:** the augmented version clearly detects more and warns earlier — but at a false-alarm rate too high for real deployment as-is. Whether the base model (fewer false alarms, but late/less sensitive) or the augmented model (more sensitive, more false alarms) is more useful depends on the deployment context — for now, both are shown honestly so the tradeoff is visible, not hidden behind one "best" number. It also inherits whatever mistakes Stage 1 already makes, since it depends on Stage 1's risk scores.
 
 ## What doesn't work well yet (and why)
 
@@ -116,6 +144,7 @@ python scripts/gen_test.py
 1. **More Panic videos, especially people fleeing/running** — this is the single biggest lever left. We've tested several technical fixes; none beat simply having more real examples.
 2. **Split "Panic" into two separate labels** (crush vs. flight) once there's enough footage of each to train on separately.
 3. **A proper crowd-density model** (like CSRNet) for handling very dense, blurry, distant footage that our current person-detector can't count accurately.
+4. **Reduce Stage 2's false-alarm rate** — currently the biggest blocker to real deployment; needs either better underlying risk scores (fixing Stage 1's blind spots) or a smarter alerting rule.
 
 ## License
 MIT — see LICENSE file.
