@@ -1,6 +1,3 @@
-
----
-
 # Janasamvedana — Early Crowd-Crush & Stampede Detection
 
 ## What this project does
