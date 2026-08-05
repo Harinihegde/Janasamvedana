@@ -24,6 +24,7 @@ from sklearn.metrics import (
 from .classifier import Stage1Model, train
 from .config import CLASSES
 from .dataset import stratified_group_folds
+from .sublabels import panic_flight_sample_weight
 
 
 def _metrics(y_true, y_pred, labels: list[str] | None = None) -> dict:
@@ -67,9 +68,16 @@ def evaluate_holdout(
     test_df: pd.DataFrame,
     labels: list[str] | None = None,
     risk_anchors: dict | None = None,
+    panic_flight_upweight: bool = False,
 ) -> dict:
-    """Train on ``train_df`` and evaluate at frame and clip level on ``test_df``."""
-    model = train(train_df, risk_anchors=risk_anchors)
+    """Train on ``train_df`` and evaluate at frame and clip level on ``test_df``.
+
+    ``panic_flight_upweight`` upweights confirmed Panic-flight frames within
+    ``train_df`` so training isn't crush-dominated (see
+    :mod:`stampede.sublabels`).
+    """
+    sample_weight = panic_flight_sample_weight(train_df) if panic_flight_upweight else None
+    model = train(train_df, risk_anchors=risk_anchors, sample_weight=sample_weight)
     y_pred = model.predict(test_df)
     frame_metrics = _metrics(test_df.label.values, y_pred, labels)
 
@@ -89,6 +97,7 @@ def cross_validate(
     n_splits: int = 5,
     labels: list[str] | None = None,
     risk_anchors: dict | None = None,
+    panic_flight_upweight: bool = False,
 ) -> dict:
     """Leakage-safe StratifiedGroupKFold CV, reported at clip level.
 
@@ -112,7 +121,8 @@ def cross_validate(
         te_paths = set(clips.loc[te_idx, "path"])
         tr = frame_df[frame_df.path.isin(tr_paths)]
         te = frame_df[frame_df.path.isin(te_paths)]
-        model = train(tr, risk_anchors=risk_anchors)
+        sample_weight = panic_flight_sample_weight(tr) if panic_flight_upweight else None
+        model = train(tr, risk_anchors=risk_anchors, sample_weight=sample_weight)
         pred = model.predict(te)
         clip_df = clip_vote(te, pred)
         oof_frames.append(clip_df)

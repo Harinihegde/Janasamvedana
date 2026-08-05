@@ -1,0 +1,38 @@
+{
+  "baseline": {
+    "accuracy": 0.6834586466165413,
+    "macro_f1": 0.6692245174858696,
+    "panic_precision": 0.5818181818181818,
+    "panic_recall": 0.5693950177935944,
+    "panic_f1": 0.5755395683453237,
+    "panic_support": 281
+  },
+  "upweighted": {
+    "accuracy": 0.6834586466165413,
+    "macro_f1": 0.6651117377432053,
+    "panic_precision": 0.5777777777777777,
+    "panic_recall": 0.5551601423487544,
+    "panic_f1": 0.5662431941923775,
+    "panic_support": 281
+  },
+  "baseline_sublabel_breakdown": {
+    "panic_crush": {
+      "n_clips": 223,
+      "recall": 0.6502242152466368
+    },
+    "panic_flight": {
+      "n_clips": 41,
+      "recall": 0.3170731707317073
+    }
+  },
+  "upweighted_sublabel_breakdown": {
+    "panic_crush": {
+      "n_clips": 223,
+      "recall": 0.6367713004484304
+    },
+    "panic_flight": {
+      "n_clips": 41,
+      "recall": 0.2926829268292683
+    }
+  }
+}

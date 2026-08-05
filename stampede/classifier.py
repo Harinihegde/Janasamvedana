@@ -101,12 +101,16 @@ def train(
     n_estimators: int = 400,
     min_samples_leaf: int = 2,
     risk_anchors: dict | None = None,
+    sample_weight: np.ndarray | None = None,
 ) -> Stage1Model:
     """Fit the normaliser and RandomForest on ``train_df`` (per-frame rows).
 
     ``risk_anchors`` defaults to the 4-class ordinal anchors; pass a custom map
     (e.g. the binary ``{"Safe": 0.0, "Stampede Risk": 1.0}``) for other label
-    schemes.
+    schemes. ``sample_weight``, if given, is multiplied by the RF's own
+    ``class_weight="balanced"`` weighting (sklearn does this automatically) -
+    use it for finer-grained upweighting within a class, e.g.
+    :func:`stampede.sublabels.panic_flight_sample_weight`.
     """
     normalizer = Normalizer.fit(train_df, feature_cols)
     rf = RandomForestClassifier(
@@ -116,7 +120,7 @@ def train(
         random_state=RANDOM_STATE,
         n_jobs=-1,
     )
-    rf.fit(normalizer.transform(train_df), train_df.label.values)
+    rf.fit(normalizer.transform(train_df), train_df.label.values, sample_weight=sample_weight)
     anchors = dict(RISK_ANCHOR) if risk_anchors is None else dict(risk_anchors)
     classes = list(CLASSES) if risk_anchors is None else list(anchors.keys())
     return Stage1Model(
