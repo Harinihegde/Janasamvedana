@@ -18,13 +18,17 @@ import pandas as pd
 
 from .config import (
     ALERT_COOLDOWN,
+    CONFIRM_FRAMES,
     CP_HIGH,
     CP_LOW,
+    CP_MIN_RISE,
     CP_VELOCITY,
     MESSAGES,
     NC_HIGH,
     NC_LOW,
+    NC_MIN_RISE,
     NC_VELOCITY,
+    RISE_BASELINE_WINDOW,
     SMOOTH_WINDOW,
     VELOCITY_WINDOW,
 )
@@ -60,12 +64,26 @@ def risk_velocity(risk: np.ndarray, window: int = VELOCITY_WINDOW) -> np.ndarray
 # ---------------------------------------------------------------------------
 # Alert detection
 # ---------------------------------------------------------------------------
-def detect_alerts(risk_raw: np.ndarray, thresholds: dict | None = None) -> dict:
+def detect_alerts(
+    risk_raw: np.ndarray,
+    thresholds: dict | None = None,
+    confirm_frames: int = CONFIRM_FRAMES,
+) -> dict:
     """Detect escalation alerts on a raw per-frame risk timeline.
 
     ``thresholds`` optionally overrides the config band edges/velocities with
-    keys ``nc_low, nc_high, nc_velocity, cp_low, cp_high, cp_velocity`` - used
-    to report a data-calibrated trade-off alongside the spec defaults.
+    keys ``nc_low, nc_high, nc_velocity, cp_low, cp_high, cp_velocity,
+    nc_min_rise, cp_min_rise, baseline_window`` - used to report a
+    data-calibrated trade-off alongside the spec defaults.
+
+    ``confirm_frames`` adds a debounce on top of the existing crossing/velocity
+    gate: once a candidate crossing is seen, the smoothed risk must stay at/
+    above the band's high edge for this many consecutive frames (the candidate
+    frame counts as the first) before the alert actually fires, at the last of
+    those frames. This is a *causal* check - it only ever waits on frames that
+    have already happened, never looks into the future - so it costs latency
+    but suppresses single-frame noise spikes. ``confirm_frames=1`` (default)
+    reproduces the original fire-immediately behaviour exactly.
 
     Returns a dict with the smoothed risk, velocity, and a list of alert
     records ``{type, frame, risk, velocity, confidence, message}``.
@@ -73,9 +91,12 @@ def detect_alerts(risk_raw: np.ndarray, thresholds: dict | None = None) -> dict:
     th = {
         "nc_low": NC_LOW, "nc_high": NC_HIGH, "nc_velocity": NC_VELOCITY,
         "cp_low": CP_LOW, "cp_high": CP_HIGH, "cp_velocity": CP_VELOCITY,
+        "nc_min_rise": NC_MIN_RISE, "cp_min_rise": CP_MIN_RISE,
+        "baseline_window": RISE_BASELINE_WINDOW,
     }
     if thresholds:
         th.update(thresholds)
+    confirm_frames = max(1, int(confirm_frames))
     risk = smooth(risk_raw)
     vel = risk_velocity(risk)
     alerts: list[dict] = []
@@ -85,47 +106,70 @@ def detect_alerts(risk_raw: np.ndarray, thresholds: dict | None = None) -> dict:
         lo = max(0, i - window)
         return risk[lo : i + 1].min() < thresh
 
+    def _rise_above_baseline(i: int, window: int) -> float:
+        """How far risk[i] sits above its own trailing minimum (causal)."""
+        lo = max(0, i - window + 1)
+        return risk[i] - risk[lo : i + 1].min()
+
+    def _confirmed(i: int, high: float) -> int | None:
+        """Return the confirmation frame if risk stays >= high for
+        ``confirm_frames`` consecutive frames starting at candidate frame
+        ``i``, else None (not enough sustained evidence yet, or the clip ends
+        first)."""
+        end = i + confirm_frames
+        if end > len(risk) or (risk[i:end] < high).any():
+            return None
+        return end - 1
+
     for i in range(1, len(risk)):
         # Crowdy -> Panic (check first: higher urgency dominates).
-        if (
+        cp_candidate = (
             risk[i - 1] < th["cp_high"]
             and risk[i] >= th["cp_high"]
             and vel[i] > th["cp_velocity"]
             and _recent_below(i, th["cp_low"])
+            and _rise_above_baseline(i, th["baseline_window"]) >= th["cp_min_rise"]
             and i - last_fire["crowdy_to_panic"] > ALERT_COOLDOWN
-        ):
-            alerts.append(
-                dict(
-                    type="crowdy_to_panic",
-                    frame=int(i),
-                    risk=float(risk[i]),
-                    velocity=float(vel[i]),
-                    confidence=float(min(1.0, vel[i] / th["cp_velocity"] / 3.0 + 0.5)),
-                    message=MESSAGES["crowdy_to_panic"],
+        )
+        if cp_candidate:
+            fire = _confirmed(i, th["cp_high"])
+            if fire is not None:
+                alerts.append(
+                    dict(
+                        type="crowdy_to_panic",
+                        frame=int(fire),
+                        risk=float(risk[fire]),
+                        velocity=float(vel[i]),
+                        confidence=float(min(1.0, vel[i] / th["cp_velocity"] / 3.0 + 0.5)),
+                        message=MESSAGES["crowdy_to_panic"],
+                    )
                 )
-            )
-            last_fire["crowdy_to_panic"] = i
+                last_fire["crowdy_to_panic"] = fire
             continue
 
         # Normal -> Crowdy.
-        if (
+        nc_candidate = (
             risk[i - 1] < th["nc_high"]
             and risk[i] >= th["nc_high"]
             and vel[i] > th["nc_velocity"]
             and _recent_below(i, th["nc_low"])
+            and _rise_above_baseline(i, th["baseline_window"]) >= th["nc_min_rise"]
             and i - last_fire["normal_to_crowdy"] > ALERT_COOLDOWN
-        ):
-            alerts.append(
-                dict(
-                    type="normal_to_crowdy",
-                    frame=int(i),
-                    risk=float(risk[i]),
-                    velocity=float(vel[i]),
-                    confidence=float(min(1.0, vel[i] / th["nc_velocity"] / 3.0 + 0.5)),
-                    message=MESSAGES["normal_to_crowdy"],
+        )
+        if nc_candidate:
+            fire = _confirmed(i, th["nc_high"])
+            if fire is not None:
+                alerts.append(
+                    dict(
+                        type="normal_to_crowdy",
+                        frame=int(fire),
+                        risk=float(risk[fire]),
+                        velocity=float(vel[i]),
+                        confidence=float(min(1.0, vel[i] / th["nc_velocity"] / 3.0 + 0.5)),
+                        message=MESSAGES["normal_to_crowdy"],
+                    )
                 )
-            )
-            last_fire["normal_to_crowdy"] = i
+                last_fire["normal_to_crowdy"] = fire
 
     return {"risk_smoothed": risk, "velocity": vel, "alerts": alerts}
 
@@ -187,7 +231,10 @@ def build_synthetic_sequences(
 # Evaluation
 # ---------------------------------------------------------------------------
 def evaluate_transitions(
-    sequences: list[dict], tolerance: int = 40, thresholds: dict | None = None
+    sequences: list[dict],
+    tolerance: int = 40,
+    thresholds: dict | None = None,
+    confirm_frames: int = CONFIRM_FRAMES,
 ) -> dict:
     """Detection rate + latency for synthetic escalation sequences.
 
@@ -199,7 +246,7 @@ def evaluate_transitions(
     latencies: list[int] = []
     per_seq = []
     for seq in sequences:
-        res = detect_alerts(seq["risk"], thresholds)
+        res = detect_alerts(seq["risk"], thresholds, confirm_frames)
         hits = [
             a
             for a in res["alerts"]
@@ -231,7 +278,9 @@ def evaluate_transitions(
 
 
 def evaluate_false_positives(
-    timelines: dict[str, pd.DataFrame], thresholds: dict | None = None
+    timelines: dict[str, pd.DataFrame],
+    thresholds: dict | None = None,
+    confirm_frames: int = CONFIRM_FRAMES,
 ) -> dict:
     """False-positive rate & risk smoothness on real single-class timelines.
 
@@ -245,7 +294,7 @@ def evaluate_false_positives(
     per_video = []
     for vid, g in timelines.items():
         risk = g.risk.to_numpy()
-        res = detect_alerts(risk, thresholds)
+        res = detect_alerts(risk, thresholds, confirm_frames)
         variances.append(float(np.var(res["risk_smoothed"])))
         n_alerts = len(res["alerts"])
         if g.label.iloc[0] in stable_labels:

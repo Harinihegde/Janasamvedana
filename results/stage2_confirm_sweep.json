@@ -1,0 +1,62 @@
+[
+  {
+    "confirm_frames": 1,
+    "nc_detection_rate": 0.7,
+    "nc_mean_latency": 0.10714285714285714,
+    "nc_n_sequences": 40,
+    "cp_detection_rate": 0.175,
+    "cp_mean_latency": -1.8571428571428572,
+    "cp_n_sequences": 40,
+    "false_positive_rate": 0.6666666666666666,
+    "n_stable_videos": 15,
+    "mean_risk_variance": 0.0062097690876001775
+  },
+  {
+    "confirm_frames": 3,
+    "nc_detection_rate": 0.675,
+    "nc_mean_latency": -1.5555555555555556,
+    "nc_n_sequences": 40,
+    "cp_detection_rate": 0.175,
+    "cp_mean_latency": -3.857142857142857,
+    "cp_n_sequences": 40,
+    "false_positive_rate": 0.5333333333333333,
+    "n_stable_videos": 15,
+    "mean_risk_variance": 0.0062097690876001775
+  },
+  {
+    "confirm_frames": 4,
+    "nc_detection_rate": 0.675,
+    "nc_mean_latency": -2.5555555555555554,
+    "nc_n_sequences": 40,
+    "cp_detection_rate": 0.125,
+    "cp_mean_latency": 0.4,
+    "cp_n_sequences": 40,
+    "false_positive_rate": 0.5333333333333333,
+    "n_stable_videos": 15,
+    "mean_risk_variance": 0.0062097690876001775
+  },
+  {
+    "confirm_frames": 5,
+    "nc_detection_rate": 0.675,
+    "nc_mean_latency": -3.5555555555555554,
+    "nc_n_sequences": 40,
+    "cp_detection_rate": 0.125,
+    "cp_mean_latency": -5.6,
+    "cp_n_sequences": 40,
+    "false_positive_rate": 0.5333333333333333,
+    "n_stable_videos": 15,
+    "mean_risk_variance": 0.0062097690876001775
+  },
+  {
+    "confirm_frames": 6,
+    "nc_detection_rate": 0.675,
+    "nc_mean_latency": -4.555555555555555,
+    "nc_n_sequences": 40,
+    "cp_detection_rate": 0.125,
+    "cp_mean_latency": -6.6,
+    "cp_n_sequences": 40,
+    "false_positive_rate": 0.5333333333333333,
+    "n_stable_videos": 15,
+    "mean_risk_variance": 0.0062097690876001775
+  }
+]

@@ -83,6 +83,15 @@ FEATURE_COLUMNS = [
     #    spacing); Crowdy is dense but has visible gaps.
     "hull_density",
     "nn_distance_mean",
+    # G) CSRNet always-on density (only nonzero when Detector was built with
+    #    csrnet_weights; 0.0 otherwise, so old heuristic-only extractions and
+    #    new CSRNet extractions share one schema). Independent of the
+    #    __call__ fallback path - runs on every frame, not just YOLO-undercount
+    #    cases, so it can flag a packed subgroup even when the overall frame
+    #    isn't dense enough to trigger the fallback.
+    "csrnet_count",
+    "csrnet_peak_density",
+    "csrnet_vs_yolo_ratio",
 ]
 
 # ---------------------------------------------------------------------------
@@ -102,6 +111,34 @@ CP_HIGH = 0.80
 CP_VELOCITY = 0.006
 
 ALERT_COOLDOWN = 15         # frames to suppress duplicate alerts of same type
+
+# Confirmation window: once a crossing candidate is seen, require the smoothed
+# risk to stay at/above the band's high edge for this many consecutive frames
+# before the alert actually fires (debounces single-frame noise spikes). 1 =
+# fire immediately on the crossing frame (legacy behaviour).
+# 3 is the swept default (see results/stage2_confirm_sweep.md): on pooled
+# leakage-safe OOF risk scores across all 71 videos it cuts the false-positive
+# rate from 67% -> 53% with the Normal->Crowdy/Crowdy->Panic detection rates
+# essentially unchanged (70%->68%, 17.5%->17.5%) and only ~2-4 extra sampled
+# frames of latency. confirm_frames >= 4 gives no further false-positive
+# improvement and starts costing Crowdy->Panic detection (17.5% -> 12.5%).
+CONFIRM_FRAMES = 3
+
+# Relative-rise gate: on top of the absolute band thresholds above, require
+# the smoothed risk at the candidate frame to have risen by at least
+# NC_MIN_RISE / CP_MIN_RISE above its own trailing minimum over the last
+# RISE_BASELINE_WINDOW frames. This targets a different failure mode than
+# confirm_frames: some stable (No Panic/Normal) videos have Stage 1 risk
+# scores that are sustainedly elevated for hundreds of frames (not brief
+# noise spikes a debounce can catch) - a fixed absolute threshold alone
+# can't tell that video apart from a genuine transition, but a genuine
+# transition rises sharply *relative to its own recent past* while a
+# systematically-elevated-but-fluctuating video does not.
+# Off (0.0) by default until validated - see
+# results/stage2_baseline_margin_sweep.md.
+RISE_BASELINE_WINDOW = 90   # frames of trailing history used as the baseline
+NC_MIN_RISE = 0.0
+CP_MIN_RISE = 0.0
 
 MESSAGES = {
     "normal_to_crowdy": "⚠️ Crowd density increasing. Monitor situation. "
