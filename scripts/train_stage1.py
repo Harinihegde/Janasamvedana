@@ -17,6 +17,7 @@ import pandas as pd
 
 from stampede.classifier import train
 from stampede.config import FEATURE_COLUMNS
+from stampede.dataset import ensure_feature_columns, filter_kept_panic
 from stampede.evaluate import cross_validate, evaluate_holdout
 from stampede.visualize import plot_confusion, plot_cv_summary
 
@@ -30,6 +31,8 @@ def main() -> None:
     a = ap.parse_args()
 
     feats = pd.read_csv(a.output / "frame_features.csv")
+    feats = ensure_feature_columns(feats)
+    feats = filter_kept_panic(feats)
     train_df = feats[feats.split == "train"].reset_index(drop=True)
     test_df = feats[feats.split == "test"].reset_index(drop=True)
 

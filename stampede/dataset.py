@@ -24,6 +24,21 @@ from .config import CLASSES, RANDOM_STATE
 #   WhatsApp Video 2025-09-23 at 18.49.36_79697ff5_clip_014.mp4
 _CLIP_SUFFIX = re.compile(r"_clip_\d+$", re.IGNORECASE)
 
+KEPT_PANIC_PATH = Path(__file__).resolve().parent.parent / "data" / "kept_panic.txt"
+
+
+def _load_kept_panic(path: Path = KEPT_PANIC_PATH) -> set[str] | None:
+    """Clip filenames retained after the manual Panic label audit (data/README.md).
+
+    The audit found and flagged blank outro cards, news-desk interviews, and
+    other non-panic contamination in the raw Panic class. Returns ``None`` if
+    the curation file is missing, so callers no-op rather than treating "no
+    file" as "keep nothing".
+    """
+    if not path.exists():
+        return None
+    return set(path.read_text().split())
+
 
 def video_id(path: str | Path) -> str:
     """Return the source-video identifier shared by all clips of one video.
@@ -36,10 +51,17 @@ def video_id(path: str | Path) -> str:
 
 
 def inventory(dataset: Path) -> pd.DataFrame:
-    """Scan ``dataset`` for ``<label>/*.mp4`` clips and record video properties."""
+    """Scan ``dataset`` for ``<label>/*.mp4`` clips and record video properties.
+
+    Panic clips not in :data:`KEPT_PANIC_PATH` (the label-audit allowlist) are
+    excluded; other classes are untouched.
+    """
+    kept_panic = _load_kept_panic()
     rows = []
     for label in CLASSES:
         for path in sorted((dataset / label).glob("*.mp4")):
+            if label == "Panic" and kept_panic is not None and path.name not in kept_panic:
+                continue
             cap = cv2.VideoCapture(str(path))
             fps = cap.get(cv2.CAP_PROP_FPS)
             frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
@@ -59,6 +81,40 @@ def inventory(dataset: Path) -> pd.DataFrame:
     if not rows:
         raise FileNotFoundError(f"No MP4 files found beneath {dataset}")
     return pd.DataFrame(rows)
+
+
+def ensure_feature_columns(frame_df: pd.DataFrame, columns: list[str] | None = None) -> pd.DataFrame:
+    """Backfill any of ``columns`` missing from ``frame_df`` with 0.0.
+
+    Cached ``frame_features.csv`` extractions made before a feature column was
+    added (e.g. the CSRNet columns) won't have it. Per config.py's documented
+    schema contract, a heuristic-only extraction should carry new columns as
+    0.0 rather than omit them, so old and new extractions share one schema.
+    """
+    from .config import FEATURE_COLUMNS
+
+    columns = FEATURE_COLUMNS if columns is None else columns
+    frame_df = frame_df.copy()
+    for col in columns:
+        if col not in frame_df.columns:
+            frame_df[col] = 0.0
+    return frame_df
+
+
+def filter_kept_panic(frame_df: pd.DataFrame) -> pd.DataFrame:
+    """Drop Panic rows for clips excluded by the label audit.
+
+    For filtering an *already-extracted* ``frame_features.csv`` (e.g. the
+    precomputed outputs most users start from) without re-running the ~1-1.5h
+    extraction step - :func:`inventory` applies the same allowlist for fresh
+    extractions.
+    """
+    kept_panic = _load_kept_panic()
+    if kept_panic is None:
+        return frame_df
+    clip_name = frame_df["path"].map(lambda p: Path(p).name)
+    drop = (frame_df["label"] == "Panic") & ~clip_name.isin(kept_panic)
+    return frame_df.loc[~drop].reset_index(drop=True)
 
 
 def grouped_split(manifest: pd.DataFrame, test_size: float = 0.2) -> pd.DataFrame:
