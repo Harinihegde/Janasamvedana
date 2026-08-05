@@ -1,10 +1,10 @@
 """Person detection with a YOLO primary path and a CSRNet-style fallback.
 
 On extremely dense frames the YOLO detector saturates and under-counts. When
-that happens we fall back to a lightweight density estimate. A real deployment
-would swap in a trained CSRNet checkpoint; here we provide a dependency-free
-image-processing surrogate so the pipeline runs end-to-end without an extra
-model download, while keeping the *interface* identical to a CSRNet wrapper.
+that happens we fall back to a density estimate: a real trained CSRNet
+checkpoint (see :mod:`.csrnet`) if ``csrnet_weights`` is supplied, otherwise a
+dependency-free image-processing surrogate so the pipeline still runs
+end-to-end without requiring a model download.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ class Detector:
     density estimate yields a count without boxes).
     """
 
-    def __init__(self, weights: str, imgsz: int = YOLO_IMGSZ):
+    def __init__(self, weights: str, imgsz: int = YOLO_IMGSZ, csrnet_weights: str | None = None):
         if not weights:
             raise ValueError(
                 "weights path is required: the pipeline will not silently "
@@ -38,6 +38,11 @@ class Detector:
 
         self.model = YOLO(weights)
         self.imgsz = imgsz
+        self._csrnet = None
+        if csrnet_weights:
+            from .csrnet import load_csrnet
+
+            self._csrnet = load_csrnet(csrnet_weights)
 
     def _yolo(self, frame: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         r = self.model(
@@ -59,18 +64,25 @@ class Detector:
         return float(edges.var()) > 500.0
 
     @staticmethod
-    def _density_count(frame: np.ndarray) -> int:
-        """CSRNet surrogate: estimate a head count from local edge density.
+    def _heuristic_density_count(frame: np.ndarray) -> int:
+        """Edge-density surrogate: estimate a head count without a trained model.
 
         Not a trained model - a transparent stand-in that returns a *higher*
         count than YOLO on saturated frames so downstream density features stay
-        monotonic. Documented as a fallback, never the primary path.
+        monotonic. Used only when no ``csrnet_weights`` were supplied.
         """
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 60, 160)
         # Roughly one head per patch of strong edges; scale is illustrative.
         density = edges.mean() / 255.0
         return int(round(density * frame.shape[0] * frame.shape[1] / 2500.0))
+
+    def _density_count(self, frame: np.ndarray) -> int:
+        if self._csrnet is not None:
+            from .csrnet import estimate_count
+
+            return int(round(estimate_count(self._csrnet, frame)))
+        return self._heuristic_density_count(frame)
 
     def __call__(self, frame: np.ndarray) -> tuple[np.ndarray, np.ndarray, int, bool]:
         boxes, conf = self._yolo(frame)
@@ -80,3 +92,18 @@ class Detector:
             if est > count:
                 return boxes, conf, est, True
         return boxes, conf, count, False
+
+    def csrnet_density(self, frame: np.ndarray) -> tuple[float, float]:
+        """Always-on ``(csrnet_count, csrnet_peak_density)`` for one frame.
+
+        Unlike ``__call__``'s fallback (only triggered when YOLO undercounts),
+        this runs on every frame when a CSRNet checkpoint is loaded, giving
+        Stage 1 a continuous density signal independent of YOLO's box count.
+        Returns ``(0.0, 0.0)`` when no ``csrnet_weights`` were supplied, so
+        callers don't need to branch on whether CSRNet is available.
+        """
+        if self._csrnet is None:
+            return 0.0, 0.0
+        from .csrnet import ALWAYS_ON_MAX_SIDE, estimate_density
+
+        return estimate_density(self._csrnet, frame, max_side=ALWAYS_ON_MAX_SIDE)

@@ -218,6 +218,10 @@ def _instant_rows(path: str, detector: Detector, stride: int | None = None,
             frame = frame_transform(frame)
         boxes, confidences, count, used_fallback = detector(frame)
         displacements = tracker.update(boxes)
+        csrnet_count, csrnet_peak_density = detector.csrnet_density(frame)
+        # How much CSRNet's density estimate exceeds YOLO's raw box count -
+        # large values flag occlusion/crush that YOLO is undercounting.
+        csrnet_vs_yolo_ratio = csrnet_count / max(count, 1)
 
         # E) compression / occlusion features.
         bbox_overlap_ratio = compute_bbox_overlap_ratio(boxes)
@@ -289,6 +293,9 @@ def _instant_rows(path: str, detector: Detector, stride: int | None = None,
                 spatial_density_mismatch=spatial_density_mismatch,
                 hull_density=hull_density,
                 nn_distance_mean=nn_distance_mean,
+                csrnet_count=csrnet_count,
+                csrnet_peak_density=csrnet_peak_density,
+                csrnet_vs_yolo_ratio=csrnet_vs_yolo_ratio,
             )
         )
     cap.release()

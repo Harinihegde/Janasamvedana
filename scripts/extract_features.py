@@ -30,6 +30,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dataset", type=Path, required=True)
     ap.add_argument("--weights", required=True)
+    ap.add_argument("--csrnet-weights", default=None,
+                    help="optional pretrained CSRNet checkpoint (see stampede/csrnet.py); "
+                    "replaces the edge-density heuristic for the dense-crowd fallback")
     ap.add_argument("--output", type=Path, default=Path("outputs"))
     ap.add_argument("--imgsz", type=int, default=512)
     ap.add_argument("--overwrite", action="store_true")
@@ -67,7 +70,7 @@ def main() -> None:
         print(f"{fp} exists; skipping extraction (use --overwrite to redo).")
         return
 
-    detector = Detector(a.weights, imgsz=a.imgsz)
+    detector = Detector(a.weights, imgsz=a.imgsz, csrnet_weights=a.csrnet_weights)
     frames = []
     n = len(manifest)
     t0 = time.time()
