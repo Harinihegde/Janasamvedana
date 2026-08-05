@@ -13,6 +13,7 @@ Output -> outputs_improved/gen_test.{json,md} and gen_features.csv
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 import zipfile
@@ -34,7 +35,10 @@ from stampede.features import (CentroidTracker, _add_window_features,
 
 ZIP = "archive.zip"
 ROOT = "Abnormal High-density Crowds"
-WEIGHTS = "/Users/harinihegde/Downloads/best_combined.pt"
+# Path to the custom YOLO person detector (see README's "You'll need to get
+# separately" section). Override with the YOLO_WEIGHTS env var rather than
+# editing this file.
+WEIGHTS = os.environ.get("YOLO_WEIGHTS", "best_combined.pt")
 OUT = Path("outputs_improved")
 CHUNK = 150            # frames per synthetic clip (~5-10 s)
 POS, NEG = "Stampede Risk", "Safe"

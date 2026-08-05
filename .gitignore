@@ -20,6 +20,7 @@ augmented_features.csv
 gen_features.csv
 *.pkl
 *.pt
+*.pth
 
 # Pipeline output dirs (large: montages, per-frame CSVs)
 outputs/
@@ -33,3 +34,6 @@ outputs_*/
 .ipynb_checkpoints/
 .vscode/
 .idea/
+
+# Local AI-assistant tool config/state — machine-specific, never shared
+.claude/

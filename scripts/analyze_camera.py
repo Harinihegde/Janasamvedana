@@ -14,6 +14,7 @@ static background, so the affine estimate there is upward-biased.
 """
 from __future__ import annotations
 
+import os
 import re
 import time
 from pathlib import Path
@@ -23,7 +24,10 @@ import numpy as np
 import pandas as pd
 from ultralytics import YOLO
 
-WEIGHTS = "/Users/harinihegde/Downloads/best_combined.pt"
+# Path to the custom YOLO person detector (see README's "You'll need to get
+# separately" section). Override with the YOLO_WEIGHTS env var rather than
+# editing this file.
+WEIGHTS = os.environ.get("YOLO_WEIGHTS", "best_combined.pt")
 MANIFEST = Path("outputs_compression2/manifest.csv")
 OUT = Path("outputs_improved/camera_axes.csv")
 CONF_HI = 0.40          # "confidently detected" for the distance measure
